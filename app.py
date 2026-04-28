@@ -9,7 +9,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+api_key = os.getenv("GEMINI_API_KEY")
+if not api_key:
+    try:
+        api_key = st.secrets["GEMINI_API_KEY"]
+    except:
+        st.error("GEMINI_API_KEY tidak ditemukan. Pastikan di .env (lokal) atau di Secrets (Cloud).")
+        st.stop()
+
+genai.configure(api_key=api_key)
 
 def get_available_model():
     preferred_models = ["gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-2.0-flash"]
